@@ -1,3 +1,3 @@
 # React-With-Typescript
 
-For Study Purpose
+To learn Typescript with React JS
