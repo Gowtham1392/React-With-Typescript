@@ -1,23 +1,34 @@
 import React from "react";
-import { tsPropertySignature } from "@babel/types";
+import { IAction, IState } from "./interfaces";
 
-interface IState {
-  episodes: [];
-  favourites: [];
-}
 const InitialState: IState = {
   episodes: [],
   favourites: []
 };
 
-export const Store = React.createContext<IState>(InitialState);
+export const Store = React.createContext<IState | any>(InitialState);
 
-function reducer() {}
+function reducer(state: IState, action: IAction) {
+  switch (action.type) {
+    case "FETCH_DATA":
+      return { ...state, episodes: action.payload };
+    case "ADD_FAV":
+      return { ...state, favourites: [...state.favourites, action.payload] };
+    case "REMOVE_FAV":
+      return { ...state, favourites: action.payload };
+    default:
+      return state;
+  }
+}
 
-export function StoreProvider(props: any) {
+export function StoreProvider(props: any): JSX.Element {
+  const [state, dispatch] = React.useReducer(reducer, InitialState);
+
   return (
     <React.Fragment>
-      <Store.Provider value={InitialState}>{props.children}</Store.Provider>
+      <Store.Provider value={{ state, dispatch }}>
+        {props.children}
+      </Store.Provider>
     </React.Fragment>
   );
 }
